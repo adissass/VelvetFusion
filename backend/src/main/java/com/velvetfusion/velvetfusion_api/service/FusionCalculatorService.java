@@ -1,5 +1,6 @@
 package com.velvetfusion.velvetfusion_api.service;
 
+import com.velvetfusion.velvetfusion_api.InvalidFusionException;
 import com.velvetfusion.velvetfusion_api.PersonaNotFoundException;
 import com.velvetfusion.velvetfusion_api.archive.DataLoader;
 import com.velvetfusion.velvetfusion_api.model.Persona;
@@ -26,7 +27,7 @@ public class FusionCalculatorService {
         );
     }
 
-    public String fuse(String name1, String name2) throws PersonaNotFoundException {
+    public Persona fuse(String name1, String name2) throws PersonaNotFoundException {
         Persona persona1 = personaRepository.findByName(name1)
                 .orElseThrow(() -> new PersonaNotFoundException(name1));
         Persona persona2 = personaRepository.findByName(name2)
@@ -47,30 +48,20 @@ public class FusionCalculatorService {
                 resultArcana = fusionChart.get(arcana2).get(arcana1);
             }
         } catch (Exception e) {
-            return "Invalid fusion";
+            throw new InvalidFusionException("No fusion result for " + arcana1 + " × " + arcana2);
         }
 
-        // Calculate result level
-        String bestMatch = getString(level1, level2, resultArcana);
+        int targetLevel = (level1 + level2) / 2 + 1;
+        Persona fused = findFusedPersona(resultArcana, targetLevel);
+        if (fused == null) {
+            throw new InvalidFusionException("No Persona found for arcana " + resultArcana + " at level " + targetLevel);
+        }
 
-        return bestMatch != null ? bestMatch : "No valid fusion result";
+        return fused;
     }
 
-    private String getString(int level1, int level2, String resultArcana) {
-        int resultLevel = (level1 + level2) / 2 + 1;
-
-        // Find the best matching persona
-        String bestMatch = null;
-        int lowestLevel = Integer.MAX_VALUE;
-
-        for (Persona persona : personaRepository.findAll()) {
-            if (persona.getArcana().equals(resultArcana) && persona.getLevel() >= resultLevel) {
-                if (persona.getLevel() < lowestLevel) {
-                    bestMatch = persona.getName();
-                    lowestLevel = persona.getLevel();
-                }
-            }
-        }
-        return bestMatch;
+    private Persona findFusedPersona(String arcana, int level){
+        return personaRepository.findFirstByArcanaAndLevelGreaterThanEqualOrderByLevelAsc(arcana, level)
+                .orElse(null);
     }
 }

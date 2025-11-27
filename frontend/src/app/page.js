@@ -1,36 +1,38 @@
 'use client';
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import personas from "../../public/data/personaData.json";
-import PersonaSearch from "@/components/PersonaSearch";
-
-
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import PersonaSearch from '@/components/PersonaSearch';
+import PersonaCard from '@/components/PersonaCard';
+import personaImageMap from '../../data/personaImageMap';
+import { fusePersonas } from '@/services/api';
 
 export default function Home() {
-  const [personaA, setPersonaA] = useState("");
-  const [personaB, setPersonaB] = useState("");
-  const [result, setResult] = useState("");
-  
+  const [personaA, setPersonaA] = useState('');
+  const [personaB, setPersonaB] = useState('');
+  const [fusionPersona, setFusionPersona] = useState(null);
+  const [status, setStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleFuse = () => {
-    const p1 = personas[personaA];
-    const p2 = personas[personaB];
-    if (!p1 || !p2) {
-      setResult("One or both personas not found.");
+  const handleFuse = async () => {
+    if (!personaA || !personaB) {
+      setFusionPersona(null);
+      setStatus('Select both personas before fusing.');
       return;
     }
-  
 
-  const avgLevel = Math.floor((p1.lvl + p2.lvl) / 2);
-  const fusedArcana = `${p1.arcana} × ${p2.arcana}`;
-
-  setResult(`Fusion: ${personaA} × ${personaB}
-    Result Arcana: ${fusedArcana}
-    Estimated Level: ${avgLevel}`);
-
-    };
-
+    try {
+      setIsLoading(true);
+      setStatus('Calculating fusion...');
+      const fusion = await fusePersonas(personaA, personaB);
+      setFusionPersona(fusion);
+      setStatus(`${personaA} × ${personaB}`);
+    } catch (err) {
+      setFusionPersona(null);
+      setStatus(err.message ?? 'Fusion failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 mt-10">
@@ -40,19 +42,26 @@ export default function Home() {
         <PersonaSearch label="Persona A" onSelect={setPersonaA} />
         <span className="text-2xl">x</span>
         <PersonaSearch label="Persona B" onSelect={setPersonaB} />
-        
       </div>
-      <Button onClick={handleFuse}>Fuse</Button>
 
-      {result && (
+      <Button onClick={handleFuse} disabled={isLoading}>
+        {isLoading ? 'Fusing...' : 'Fuse'}
+      </Button>
+
+      {status && (
         <div className="mt-4 p-4 border rounded-md bg-gray-100 w-full max-w-md whitespace-pre-wrap text-left">
-        <strong>Result:</strong> {result}
-      </div>
+          <strong>Status:</strong> {status}
+        </div>
       )}
-     
+
+      {fusionPersona && (
+        <PersonaCard
+          name={fusionPersona.name}
+          imageSrc={personaImageMap[fusionPersona.name]}
+          arcana={fusionPersona.arcana}
+          level={fusionPersona.level}
+        />
+      )}
     </div>
-
-
-
   );
 }

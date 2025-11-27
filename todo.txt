@@ -1,0 +1,128 @@
+# Backend-Frontend Integration Plan
+
+Based on my analysis, here's an actionable step-by-step plan to integrate your Spring Boot backend with your Next.js frontend:
+
+## Phase 1: Backend Preparation
+
+**Step 1: Verify Database Setup**
+x Ensure PostgreSQL is running on localhost:5432
+x Verify the database "velvetfusion" exists
+x Confirm persona data is populated in the "persona" table (not "personaDTO")
+x Google search: "how to check if postgres database has data"
+
+**Step 2: Add CORS Configuration**
+x Spring Boot blocks cross-origin requests by default
+x Need to allow requests from your frontend (localhost:3000)
+x Add @CrossOrigin annotation to PersonaController.java
+x Google search: "spring boot cors configuration" or "spring boot @CrossOrigin example"
+
+**Step 3: Test Backend API**
+x Start your Spring Boot application
+x Test endpoints using browser or Postman
+x Verify these work:
+  x GET http://localhost:8080/api/v1/persona (should return JSON array)
+  x GET http://localhost:8080/api/v1/persona/Arsene (should return single persona)
+  x GET http://localhost:8080/api/v1/persona/fuse?name1=Arsene&name2=Pixie (should return fusion result)
+x Google search: "how to test REST API endpoints" or "postman tutorial"
+
+## Phase 2: Frontend API Layer Setup
+
+**Step 4: Create API Service Module**
+x Create a new file: frontend/src/services/api.js
+x This centralizes all API calls in one place
+x Define functions for: getAllPersonas, getPersona, fusePersonas
+x Use JavaScript fetch API or install axios library
+x Google search: "javascript fetch api tutorial" or "next.js api calls best practices"
+
+**Step 5: Environment Configuration**
+x Create .env.local file in frontend root
+x Store API base URL so it's easy to change later
+x Next.js requires NEXT_PUBLIC_ prefix for client-side variables
+x Google search: "next.js environment variables" or "next.js .env.local setup"
+
+## Phase 3: Update Frontend Components
+
+**Step 6: Update Persona Search Component**
+x Change from importing static JSON to fetching from API
+x Use React useEffect hook to load data on component mount
+x Handle loading state while data fetches
+x Handle error state if API call fails
+x Google search: "react useEffect fetch data" or "react async data fetching"
+
+**Step 7: Update Home Page (Fusion Calculator)**
+x Replace client-side fusion logic with API call
+x Make fusion request when user clicks "Fuse" button
+x Add loading indicator during API call
+x Display result or error message
+x Google search: "react async button click" or "react handle form submission"
+
+**Step 8: Update Personas Page (Browser)**
+x Change from static JSON to API data
+x Fetch all personas on page load
+x Keep existing filter logic (search, arcana, level) - these work client-side
+x Add loading skeleton or spinner while fetching
+x Google search: "react loading state patterns" or "next.js data fetching"
+
+## Phase 4: Error Handling & Polish
+
+**Step 9: Add Error Handling**
+- Handle network errors (backend not running)
+- Handle 404 errors (persona not found)
+- Handle 500 errors (server errors)
+- Display user-friendly error messages
+- Google search: "react error handling patterns" or "javascript fetch error handling"
+
+**Step 10: Add Loading States**
+- Show loading indicators while data fetches
+- Prevent duplicate requests
+- Disable buttons during loading
+- Google search: "react loading spinner" or "next.js loading states"
+
+## Phase 5: Testing & Verification
+
+**Step 11: Test Full Integration**
+- Start backend: cd backend && ./mvnw spring-boot:run
+- Start frontend: cd frontend && npm run dev
+- Test fusion calculator with various persona combinations
+- Test persona browser filtering
+- Test error cases (invalid names, backend down)
+- Google search: "how to run spring boot and react together"
+
+**Step 12: Verify Data Consistency**
+- Ensure persona names match between backend database and frontend image map
+- Check that all personas from database display correctly
+- Verify image paths still work
+- Google search: "debugging missing data in react" if issues arise
+
+## Common Issues to Watch For
+
+**CORS Errors**
+- Symptom: Console shows "blocked by CORS policy"
+- Solution: Add/verify @CrossOrigin annotation in backend
+- Google search: "cors error spring boot nextjs"
+
+**Port Conflicts**
+- Backend should run on port 8080
+- Frontend should run on port 3000
+- Google search: "how to change spring boot port" or "how to change next.js port"
+
+**Data Format Mismatches**
+- Backend returns "level" but frontend expects "lvl"
+- Need to map/transform data in API service layer
+- Google search: "javascript map array transform keys"
+
+**Image Paths Not Working**
+- Images are in frontend/public/images/
+- Backend only returns persona name, not image path
+- PersonaImageMap should still handle this client-side
+
+## Recommended Learning Resources
+
+Search for these topics if you're unfamiliar:
+1. "REST API integration tutorial"
+2. "React async state management"
+3. "Next.js API routes vs external API"
+4. "Spring Boot REST API CORS setup"
+5. "JavaScript Promises and async/await"
+
+Would you like me to proceed with creating a formal plan, or do you have questions about any of these steps?

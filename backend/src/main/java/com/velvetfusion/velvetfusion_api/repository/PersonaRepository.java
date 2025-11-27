@@ -11,4 +11,5 @@ public interface PersonaRepository extends JpaRepository<Persona, Long> {
     List<Persona> findByArcana(String arcana);
     List<Persona> findByLevelGreaterThanEqual(int level);
     Optional<Persona> findByName(String name);
+    Optional<Persona> findFirstByArcanaAndLevelGreaterThanEqualOrderByLevelAsc(String arcana, int level);
 }

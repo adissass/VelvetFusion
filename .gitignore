@@ -9,6 +9,7 @@ next-env.d.ts
 .DS_Store
 .env*
 .vercel
+.env.local
 
 # === BACKEND (Spring Boot / Java) ===
 target/
