@@ -10,6 +10,8 @@ Provide a reproducible baseline and before/after comparisons for backend perform
 
 - `BASELINE_CONTRACT.md`
   - The fixed benchmark rules and run procedure.
+- `API_DB_SNAPSHOT.md`
+  - Phase 0 snapshot of current API contract and DB schema assumptions.
 - `k6/`
   - k6 scripts and k6-specific notes.
 - `runs/`
