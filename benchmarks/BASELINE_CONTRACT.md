@@ -6,7 +6,7 @@ This contract defines exactly how baseline measurements are collected for Phase 
 
 Capture reproducible baseline metrics for:
 - `/fuse` latency
-- `/personas` latency (page size 50)
+- `/persona` list latency (current endpoint)
 - backend cold start time
 
 The baseline is the reference for all later performance claims.
@@ -59,7 +59,7 @@ Final reported value:
 ## 6) Metrics To Record
 
 - `/fuse` p95 latency (warm)
-- `/personas` p95 latency (warm, size 50)
+- `/persona` p95 latency (warm, current list endpoint)
 - persona list response item count (for comparability notes)
 - cold start time (seconds)
 - request error rate (%)
