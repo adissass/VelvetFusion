@@ -68,11 +68,6 @@ This maps to:
 - npm + package-lock (`frontend/package-lock.json`)
 - k6 benchmark contract under `benchmarks/`
 
-## Project Docs
-
-- Product scope: `USER_FEATURES.md`
-- Roadmap: `velvetfusion_roadmap.md`
-
 ## Current API Surface
 
 Base path: `/api/v1/persona`

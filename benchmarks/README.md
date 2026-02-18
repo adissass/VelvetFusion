@@ -4,7 +4,7 @@ This directory contains the performance measurement contract, scripts, and recor
 
 ## Purpose
 
-Provide a reproducible baseline and before/after comparisons for backend performance work in `velvetfusion_roadmap.md`.
+Provide a reproducible baseline and before/after comparisons for backend performance work in `docs/internal/velvetfusion_roadmap.md`.
 
 ## Structure
 

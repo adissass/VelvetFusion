@@ -25,9 +25,4 @@ HELP.md
 *.log
 
 # === Internal Working Docs ===
-prompt.md
-workflow.md
-USER_FEATURES.md
-velvetfusion_roadmap.md
-backend/DEEP_DIVE.md
-frontend/DEEP_DIVE.md
+docs/internal/
