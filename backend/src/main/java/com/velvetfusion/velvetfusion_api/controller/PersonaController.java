@@ -2,6 +2,8 @@ package com.velvetfusion.velvetfusion_api.controller;
 
 import com.velvetfusion.velvetfusion_api.service.FusionCalculatorService;
 import com.velvetfusion.velvetfusion_api.PersonaNotFoundException;
+import com.velvetfusion.velvetfusion_api.dto.PersonaResponseDto;
+import com.velvetfusion.velvetfusion_api.mapper.PersonaMapper;
 import com.velvetfusion.velvetfusion_api.model.Persona;
 import com.velvetfusion.velvetfusion_api.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +26,20 @@ public class PersonaController {
     }
 
     @GetMapping
-    public List<Persona> getAllPersonas() {
-        return personaRepository.findAll();
+    public List<PersonaResponseDto> getAllPersonas() {
+        return PersonaMapper.toResponseDtoList(personaRepository.findAll());
     }
 
     @GetMapping("/fuse")
-    public ResponseEntity<Persona> fuse(@RequestParam String name1, @RequestParam String name2) throws PersonaNotFoundException {
+    public ResponseEntity<PersonaResponseDto> fuse(@RequestParam String name1, @RequestParam String name2) throws PersonaNotFoundException {
         Persona fusion = fusionCalculator.fuse(name1, name2);
-        return ResponseEntity.ok(fusion);
+        return ResponseEntity.ok(PersonaMapper.toResponseDto(fusion));
     }
 
     @GetMapping("/{name}")
-    public Persona getPersona(@PathVariable String name) {
-        return personaRepository.findByName(name)
+    public PersonaResponseDto getPersona(@PathVariable String name) {
+        Persona persona = personaRepository.findByName(name)
                 .orElseThrow(() -> new PersonaNotFoundException(name));
+        return PersonaMapper.toResponseDto(persona);
     }
 }
