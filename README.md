@@ -61,6 +61,7 @@ This maps to:
 - Spring Boot 3.5
 - Spring Web
 - Spring Data JPA
+- Flyway (schema migrations)
 - PostgreSQL
 
 ### Tooling
@@ -70,11 +71,21 @@ This maps to:
 
 ## Current API Surface
 
-Base path: `/api/v1/persona`
+Base paths: `/api/v1/persona`, `/api/v1/health`
 
-- `GET /api/v1/persona` -> list personas
+- `GET /api/v1/persona?page=0&size=50` -> paginated persona list
+  - response shape: `{ items, page, size, totalItems, totalPages, hasNext, hasPrevious }`
 - `GET /api/v1/persona/{name}` -> fetch persona by exact name
 - `GET /api/v1/persona/fuse?name1=A&name2=B` -> fusion result
+- `GET /api/v1/health` -> service/db health status (`UP` or `DOWN`)
+
+Error contract:
+- canonical JSON error shape via global exception handling
+- status/code/message/path fields are stable across handled error types
+
+Request tracing:
+- each response includes `X-Request-Id`
+- backend logs include request start/end with `requestId`, status, and duration
 
 ## Local Development (Current)
 
@@ -84,6 +95,10 @@ Backend:
 cd backend
 ./mvnw spring-boot:run
 ```
+
+Notes:
+- Flyway migrations run on startup.
+- Existing local schema is baselined and migrated automatically.
 
 Frontend:
 
@@ -105,3 +120,15 @@ Frontend API base is currently set through:
 Benchmark baseline contract and artifact layout:
 - `benchmarks/BASELINE_CONTRACT.md`
 - `benchmarks/README.md`
+
+## Phase 1 Status (Local)
+
+Completed locally:
+- DTO-based API responses (no entity leakage)
+- global error contract
+- request validation
+- paginated persona endpoint
+- Flyway baseline migration setup
+- integration tests for fuse/error/pagination/health
+- structured request logging with `requestId`
+- pre-deploy quality gate verification
