@@ -2,10 +2,12 @@ package com.velvetfusion.velvetfusion_api.controller;
 
 import com.velvetfusion.velvetfusion_api.service.FusionCalculatorService;
 import com.velvetfusion.velvetfusion_api.PersonaNotFoundException;
+import com.velvetfusion.velvetfusion_api.dto.FuseRequestDto;
 import com.velvetfusion.velvetfusion_api.dto.PersonaResponseDto;
 import com.velvetfusion.velvetfusion_api.mapper.PersonaMapper;
 import com.velvetfusion.velvetfusion_api.model.Persona;
 import com.velvetfusion.velvetfusion_api.repository.PersonaRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +33,8 @@ public class PersonaController {
     }
 
     @GetMapping("/fuse")
-    public ResponseEntity<PersonaResponseDto> fuse(@RequestParam String name1, @RequestParam String name2) throws PersonaNotFoundException {
-        Persona fusion = fusionCalculator.fuse(name1, name2);
+    public ResponseEntity<PersonaResponseDto> fuse(@Valid @ModelAttribute FuseRequestDto request) throws PersonaNotFoundException {
+        Persona fusion = fusionCalculator.fuse(request.getName1(), request.getName2());
         return ResponseEntity.ok(PersonaMapper.toResponseDto(fusion));
     }
 
