@@ -11,7 +11,10 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.blankOrNullString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,5 +78,13 @@ class PersonaApiIntegrationTests {
         assertEquals("UP", json.get("db").asText());
         assertTrue(json.has("status"));
         assertTrue(json.has("db"));
+    }
+
+    @Test
+    void responseContainsRequestIdHeader() throws Exception {
+        mockMvc.perform(get("/api/v1/health"))
+                .andExpect(status().isOk())
+                .andExpect(header().exists("X-Request-Id"))
+                .andExpect(header().string("X-Request-Id", not(blankOrNullString())));
     }
 }
